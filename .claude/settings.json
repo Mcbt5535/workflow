@@ -20,11 +20,7 @@
       "Bash(grep:*)",
       "Read(./**)",
       "Write(.claude/workflow/plans/**)",
-      "Write(.claude/workflow/summaries/**)",
-      "Write(.claude/workflow/archive/**)",
-      "Edit(.claude/workflow/plans/**)",
-      "Edit(.claude/workflow/summaries/**)",
-      "Edit(.claude/workflow/archive/**)"
+      "Edit(.claude/workflow/plans/**)"
     ],
     "ask": [
       "Bash(git commit:*)",
@@ -34,44 +30,11 @@
     ]
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash(git commit:*)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if [ \"$WF_ALLOW_AUTO_COMMIT\" != \"true\" ]; then echo '{\"systemMessage\":\"Auto-commit is disabled. Set WF_ALLOW_AUTO_COMMIT=true to enable.\",\"continue\":false,\"stopReason\":\"Git commit blocked: WF_ALLOW_AUTO_COMMIT is false\"}'; else echo '{\"continue\":true}'; fi"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "matcher": "startup|resume",
         "hooks": [
           { "type": "command", "command": "bash .claude/hooks/wf-session-start.sh" }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          { "type": "command", "command": "bash .claude/hooks/wf-post-tool.sh" }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          { "type": "command", "command": "bash .claude/hooks/wf-stop.sh" }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          { "type": "command", "command": "bash .claude/hooks/wf-session-end.sh" }
         ]
       }
     ]

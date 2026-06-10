@@ -1,25 +1,25 @@
 ---
-description: Pause the active plan and inject a new step / blocker / pivot — without losing progress.
-argument-hint: <what to inject, e.g. "add step: write integration test before step 4">
+description: 计划有变时修订活跃计划：增删步骤、转向。过时内容直接删除，废弃方向记入「死胡同」。
+argument-hint: <变更描述，如 "步骤4前加一步集成测试" / "放弃缓存方案，改用直连">
 ---
 
-Interrupt the active plan with the following change:
+按以下变更修订活跃计划：
 
 $ARGUMENTS
 
-Steps:
-1. Find the active plan (most recent `.claude/workflow/plans/*.md` with `status: in_progress`).
-2. Re-read it fully (it's small — usually <150 lines).
-3. Apply the requested change. Common cases:
-   - **Add a step:** insert a new `- [ ]` bullet at the right position. Update step numbering only in titles, not in checkbox state.
-   - **Remove a step:** delete the bullet. If already done, leave it but mark `(reverted)`.
-   - **Reorder:** move bullets, preserving their `[x] / [ ] / [?]` state.
-   - **Pivot goal:** rewrite the Goal section, then list which existing steps still apply under `## Plan` and add new ones below.
-4. Add a single line under `## Notes` (create section if missing):
-   `- <today>: interrupted — <one-line summary>`
-5. Save. Report back: which steps were added/removed/reordered.
+1. 找到活跃计划（规则同 /wf-dev），完整读一遍。
+2. 应用变更：
+   - **加步骤**：在正确位置插入 `- [ ]`，重排后续编号。
+   - **删步骤 / 换做法**：把不再适用的步骤和相关的过时上下文**直接删掉**——包括已 `[x]` 但属于错误方向的——不留「已撤销」之类的残留，过时信息只会误导后续执行。
+   - **转向**：重写「目标」，保留仍适用的步骤，补上新步骤。
+3. 把每个被废弃的方向在「死胡同」一节记一行（节不存在就创建）：
+   `- <日期>：<废弃的方向/做法> — <原因>`
+   这是给后续 agent 的护栏，防止重走老路。
+4. 修订后的计划读起来要像为当前方向新写的一样干净；唯一的历史痕迹就是「死胡同」。
+5. 保存并汇报：加 / 删 / 改了哪些步骤，「死胡同」新增了哪条。
 
-Hard rules:
-- Do not execute any plan steps. This is an edit-only command.
-- Do not change `[x]` to `[ ]` unless the user explicitly says "revert step N".
-- Preserve all existing `HUMAN:` notes.
+规则：
+- 只改计划文件，不执行任何步骤。
+- 正确方向上已完成的 `[x]` 保持原样。
+- 保留所有 `HUMAN:` 标注。
+- 变更涉及换模型时，直接改 frontmatter 的 `model:` 字段。

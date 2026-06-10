@@ -2,9 +2,13 @@
 # Claude Code status line: model, thinking, tokens, context
 input=$(cat)
 
-IFS=$'\x01' read -r model thinking_enabled effort_level ctx_used ctx_max input_tokens output_tokens h5_pct h5_reset w7_pct w7_reset < <(
+# Field separator: US (0x1f). Built via printf so it works on macOS bash 3.2,
+# which neither understands $'\xHH' nor splits on SOH (0x01) in `read`.
+IFS=$(printf '\037')
+read -r model thinking_enabled effort_level ctx_used ctx_max input_tokens output_tokens h5_pct h5_reset w7_pct w7_reset < <(
   python3 "${CLAUDE_PROJECT_DIR:-.}/.claude/statusline-parse.py" "$input"
 )
+IFS=$' \t\n'
 
 # -- Model segment --
 model_seg="\033[1;36m${model}\033[0m"

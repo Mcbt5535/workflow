@@ -65,7 +65,7 @@ try:
     in_fmt = fmt_k(total_in) if total_in else ""
     out_fmt = fmt_k(out)
 
-    sep = "\x01"
+    sep = "\x1f"
     print(
         sep.join(
             [
@@ -84,4 +84,4 @@ try:
         )
     )
 except Exception as e:
-    print("\x01".join(["Unknown", "false", "", "", "", "", "", "", ""]))
+    print("\x1f".join(["Unknown", "false", "", "", "", "", "", "", "", "", ""]))
